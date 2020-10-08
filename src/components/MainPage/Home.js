@@ -1,109 +1,65 @@
-// import React, { useEffect, useState } from 'react';
-// import './Home.css'
-// import { Container, FormControl, InputGroup } from 'react-bootstrap';
-// import Header from './Header';
-// import { Link } from 'react-router-dom';
-
-// const Home = () => {
-//     const [event, setEvent] = useState([]);
-
-//     useEffect(() => {
-//         fetch(`http://localhost:5000/events`)
-//             .then(res => res.json())
-//             .then(data => {
-//                 setEvent(data);
-//             })
-//     }, [])
-//     return (
-//         <Container fluid>
-//             <Container>
-//                 <Header />
-//                 <div className="p-4">
-//                     <h2>I GROW BY HELPING PEOPLE IN NEED.</h2>
-//                     <InputGroup className="mb-3 w-50 mx-auto p-3">
-//                         <FormControl
-//                             placeholder="Search..."
-//                             aria-label="Search..."
-//                             aria-describedby="basic-addon2"
-//                         />
-//                         <InputGroup.Append>
-//                             <button className="btn btn-primary">Search</button>
-//                         </InputGroup.Append>
-//                     </InputGroup>
-//                     <div className="row">
-//                         {
-//                             event.map((event) =>
-//                                 <div className="col-md-3 p-3" key={event._id}>
-//                                     <Link to="/regForm">
-//                                         <div className="eventImg">
-//                                             <img src={event.image} alt="" className="w-100" />
-//                                         </div>
-//                                         <h5 style={{backgroundColor: event.color, color: "white"}} className="p-3 rounded">{event.title}</h5>
-//                                     </Link>
-//                                 </div>
-//                             )
-//                         }
-//                     </div>
-//                 </div>
-//             </Container>
-//         </Container>
-//     );
-// };
-
-// export default Home;
-
-
-
-import React, { useEffect, useState } from 'react';
-import './Home.css'
-import { Container, FormControl, InputGroup } from 'react-bootstrap';
-import Header from './Header';
-import { Link } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from "react";
+import { UserContext } from "../../App";
+import { volunteerTasks } from "../../fakeData/fakeData";
+import Card from "./Card";
 
 const Home = () => {
-    const [event, setEvent] = useState([]);
+	const tasks = volunteerTasks;
 
-    useEffect(() => {
-        fetch(`http://localhost:5000/events`)
-            .then(res => res.json())
-            .then(data => {
-                setEvent(data);
-            })
-    }, [])
-    return (
-        <Container fluid>
-            <Container>
-                <Header />
-                <div className="p-4">
-                    <h2>I GROW BY HELPING PEOPLE IN NEED.</h2>
-                    <InputGroup className="mb-3 w-50 mx-auto p-3">
-                        <FormControl
-                            placeholder="Search..."
-                            aria-label="Search..."
-                            aria-describedby="basic-addon2"
-                        />
-                        <InputGroup.Append>
-                            <button className="btn btn-primary">Search</button>
-                        </InputGroup.Append>
-                    </InputGroup>
-                    <div className="row">
-                        {
-                            event.map((event) =>
-                                <div className="col-md-3 p-3" key={event._id}>
-                                    <Link to={`/regForm/${event.title}`}>
-                                        <div className="eventImg">
-                                            <img src={event.image} alt="" className="w-100" />
-                                        </div>
-                                        <h5 style={{backgroundColor: event.color, color: "white"}} className="p-3 rounded">{event.title}</h5>
-                                    </Link>
-                                </div>
-                            )
-                        }
-                    </div>
-                </div>
-            </Container>
-        </Container>
-    );
+	const { user, data } = useContext(UserContext);
+	const [baseData, setBaseData] = data;
+
+	// If DB is empty then add fake data
+	const handleAddBaseData = () => {
+        console.log(volunteerTasks);
+        
+		fetch("http://localhost:5000/addBaseData", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(volunteerTasks),
+		});
+	};
+
+	// Get data from DB and baseData
+	useEffect(() => {
+		fetch("http://localhost:5000/home")
+			.then((res) => res.json())
+			.then((data) => {
+				setBaseData(data);
+				console.log("Home->", data);
+			});
+	}, []);
+
+	return (
+		<main className="vn-home pt-5 mt-2">
+			<div className="container text-center">
+				<div className="vn-works-search">
+					<h2 className="display-5 mb-4">I grow by helping people in need.</h2>
+					<div className="form-group">
+						<input type="search" placeholder="Search ... " className="form-control" />
+						<button className="btn btn-primary" type="button" id="button-addon2">
+							Search
+						</button>
+					</div>
+				</div>
+				<div className="vn-works py-5 mt-2">
+					{baseData.length ? (
+						<div className="row">
+							{baseData.map((task) => (
+								<Card task={task} key={Math.random()}></Card>
+							))}
+						</div>
+					) : (
+						<div style={{ maxWidth: "400px", margin: "auto" }}>
+							
+						</div>
+					)}
+				</div>
+			</div>
+		</main>
+	);
 };
 
 export default Home;

@@ -1,65 +1,75 @@
-import React, { useContext, useState } from 'react';
-import './Login.css'
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import React, { useContext, useState } from "react";
+import logo from "../../images/logos/google.png";
 import * as firebase from "firebase/app";
 import "firebase/auth";
-import firebaseConfig from './firebaseConfig';
-import { UserContext } from '../../App';
+import firebaseConfig from "./firebaseConfig";
+import { UserContext } from "../../App";
+import { Link, useHistory, useLocation } from "react-router-dom";
 
 const Login = () => {
-    const [loggedInUser, setLoggedInUser] = useContext(UserContext);
-    const [user, setUser] = useState({
-        isSiggnedIn: false,
-        name: '',
-        email:'',
-    });
+	const { user, data } = useContext(UserContext);
+	const [loggedInUser, setLoggedInUser] = user;
 
+	const [alert, setAlert] = useState({
+		success: false,
+		error: "",
+	});
 
-    if(firebase.apps.length === 0){
-        firebase.initializeApp(firebaseConfig);
-    }
-    let history = useHistory();
-    let location = useLocation();
+	/* Route redirects after login */
+	const history = useHistory();
+	const location = useLocation();
+	const { from } = location.state || { from: { pathname: "/events" } };
 
-    let { from } = location.state || { from: { pathname: "/" } };
+	// Initialize Firebase
+	if (!firebase.apps.length) {
+		firebase.initializeApp(firebaseConfig);
+	}
+	/* GOOGLE Sign in */
+	const handleGoogleSignIn = () => {
+		const provider = new firebase.auth.GoogleAuthProvider();
 
-    const googleSingIn = () =>{
-        const googleProvider = new firebase.auth.GoogleAuthProvider();
-        firebase.auth().signInWithPopup(googleProvider)
-        .then(result =>{
-            const {displayName, email} = result.user;   //Destructure
-            const signedInUser = {
-                isSiggnedIn: true,
-                name: displayName,
-                email: email
-            }
-            setUser(signedInUser);
-            setLoggedInUser(signedInUser);
-            console.log(user);
-            history.replace(from);
-          })
-          .catch(error => {
-            var errorCode = error.code;
-            var errorMessage = error.message;
+		firebase
+			.auth()
+			.signInWithPopup(provider)
+			.then((result) => {
+				const { displayName, email } = result.user;
+				const newUser = {
+					isLoggedIn: true,
+					name: displayName,
+					email: email,
+				};
+				setLoggedInUser(newUser);
+				history.replace(from);
 
-            console.log(errorCode, errorMessage);
-          });
-    }
-    return (
-        <div className="loginContainer">
-            <div className="p-5">
-                <Link to="/home"><img src="https://iili.io/2VACFV.png" style={{width: 200}} className="d-inline-block align-top" alt=""/></Link>
-            </div>
-            <div className="w-50 mx-auto border p-5 bg-white">
-                <h3 className="p-3">Login With</h3>
-                <div className="border rounded p-1 pl-5 pr-5 ">
-                    <Link onClick={googleSingIn} className="font-weight-bold text-dark"><span><img src="https://iili.io/2xw5TQ.png" alt=""className="icon m-1"/></span>Continue with Google</Link>
-                </div>
-                <p className="p-2">Don't have an account? <Link to="">Create an account</Link></p>
+				const newAlert = { ...alert };
+				newAlert.success = true;
+				newAlert.error = "";
+				setAlert(newAlert);
+			})
+			.catch((error) => {
+				const newAlert = { ...alert };
+				newAlert.error = error.message;
+				setAlert(newAlert);
+			});
+	};
 
-            </div>
-        </div>
-    );
+	return (
+		<div className="container d-flex align-items-center justify-content-center py-5 my-5">
+			<div className="vn-login-register login p-md-5 p-3">
+				{alert.error.length > 0 && <div className="alert alert-danger text-center">{alert.error}</div>}
+
+				<h4 className="mb-5">Login With</h4>
+				<button className="btn btn-outline-secondary social-login" onClick={handleGoogleSignIn}>
+					<img src={logo} alt="" />
+					Continue with Google
+				</button>
+				<h5 className="mt-3">
+					<span>Don’t have an account?</span>
+					<Link to="/login">Create an account</Link>
+				</h5>
+			</div>
+		</div>
+	);
 };
 
 export default Login;
