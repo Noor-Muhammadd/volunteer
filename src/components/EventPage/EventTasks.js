@@ -13,7 +13,7 @@ const EventTasks = () => {
 
 	// Filtering tasks for an user
 	useEffect(() => {
-		fetch(`http://localhost:5000/events?email=${loggedInUser.email}`)
+		fetch(`https://sleepy-temple-92450.herokuapp.com/events?email=${loggedInUser.email}`)
 			.then((res) => res.json())
 			.then((data) => {
 				setUserTasks([...data]);
@@ -28,7 +28,7 @@ const EventTasks = () => {
 		})
 			.then((res) => res.json())
 			.then((result) => {
-				console.log(result, "Task deleted ⚠️");
+				console.log(result, "Task deleted");
 				if (result) {
 					const newTasks = [...userTasks].filter((task) => task._id !== id);
 					setUserTasks(newTasks);

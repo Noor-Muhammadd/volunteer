@@ -14,7 +14,7 @@ const AdminDashboard = () => {
 	// Get register users data and update volunteerList
 	useEffect(() => {
 		if (toggleView.showList) {
-			fetch("http://localhost:5000/loadVolunteerList")
+			fetch("https://sleepy-temple-92450.herokuapp.com/loadVolunteerList")
 				.then((res) => res.json())
 				.then((data) => setVolunteerList(data));
 		}
@@ -24,12 +24,12 @@ const AdminDashboard = () => {
 	const handleDeleteEvent = (id) => {
 		if (window.confirm("Are you sure to delete this task permanently?")) {
 			console.log("delete clicked", id);
-			fetch(`http://localhost:5000/admin/deleteTask/${id}`, {
+			fetch(`https://sleepy-temple-92450.herokuapp.com/admin/deleteTask/${id}`, {
 				method: "DELETE",
 			})
 				.then((res) => res.json())
 				.then((result) => {
-					console.log(result, "Task deleted ⚠️");
+					console.log(result, "Task deleted");
 					if (result) {
 						const newVolList = volunteerList.filter((task) => task._id !== id);
 						setVolunteerList(newVolList);

@@ -15,16 +15,13 @@ const Login = () => {
 		error: "",
 	});
 
-	/* Route redirects after login */
 	const history = useHistory();
 	const location = useLocation();
 	const { from } = location.state || { from: { pathname: "/events" } };
 
-	// Initialize Firebase
 	if (!firebase.apps.length) {
 		firebase.initializeApp(firebaseConfig);
 	}
-	/* GOOGLE Sign in */
 	const handleGoogleSignIn = () => {
 		const provider = new firebase.auth.GoogleAuthProvider();
 

@@ -24,13 +24,12 @@ const Register = () => {
 		img: selectedTask.img,
 	});
 
-	// Event registration
 	const handleSubmitTask = (e) => {
 		e.preventDefault();
 
 		const newVolunteer = { ...volunteer };
 
-		fetch("http://localhost:5000/registerVolunteer", {
+		fetch("https://sleepy-temple-92450.herokuapp.com/registerVolunteer", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(newVolunteer),
@@ -47,7 +46,6 @@ const Register = () => {
 			});
 	};
 
-	// Input fields handler
 	const handleInputValue = (e) => {
 		const newVolunteer = { ...volunteer };
 		newVolunteer[e.target.name] = e.target.value;

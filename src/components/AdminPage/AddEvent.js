@@ -17,7 +17,7 @@ const AddEvent = () => {
 	// Add an event task
 	const handleAddEvent = (e) => {
 		e.preventDefault();
-		fetch("http://localhost:5000/admin/addEvent", {
+		fetch("https://sleepy-temple-92450.herokuapp.com/admin/addEvent", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(addTask),

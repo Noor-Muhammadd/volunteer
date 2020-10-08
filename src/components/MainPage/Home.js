@@ -13,7 +13,7 @@ const Home = () => {
 	const handleAddBaseData = () => {
         console.log(volunteerTasks);
         
-		fetch("http://localhost:5000/addBaseData", {
+		fetch("https://sleepy-temple-92450.herokuapp.com/addBaseData", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -22,9 +22,8 @@ const Home = () => {
 		});
 	};
 
-	// Get data from DB and baseData
 	useEffect(() => {
-		fetch("http://localhost:5000/home")
+		fetch("https://sleepy-temple-92450.herokuapp.com/hom")
 			.then((res) => res.json())
 			.then((data) => {
 				setBaseData(data);
