@@ -17,7 +17,7 @@ const AddEvent = () => {
 	// Add an event task
 	const handleAddEvent = (e) => {
 		e.preventDefault();
-		fetch("https://still-stream-80611.herokuapp.com/admin/addEvent", {
+		fetch("http://localhost:5000/admin/addEvent", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(addTask),
